@@ -28,6 +28,126 @@ app.listen(port, function() {
     console.log("App listening at port "  + port);
 });
 
+const mysql = require('mysql')
+details = {
+    /*
+    node1: {
+        //host: 'us-cdbr-east-05.cleardb.net',
+        host: 'a',
+        user: 'b6a546b49b5f9a',
+        password: '4469befb',
+        database: 'heroku_4d478ba2b4e8562'
+    },
+    */
+    node1: {
+        host: 'localhost',
+        //host: 'a',
+        user: 'root',
+        password: 'root',
+        database: 'node1'
+    },
+    node2: {
+        host: 'localhost',
+        //host: 'a',
+        user: 'root',
+        password: 'root',
+        database: 'node2'
+    },
+    node3: {
+        host: 'localhost',
+        //host: 'a',
+        user: 'root',
+        password: 'root',
+        database: 'node3'
+    }
+}
+
+var node1 = mysql.createConnection(details.node1);
+var node2 = mysql.createConnection(details.node2);
+var node3 = mysql.createConnection(details.node3);
+
+node1.on('error', (err) => {
+    console.log(err)
+    node1 = mysql.createConnection(details.node1)
+    node1.connect((err) => {
+        if (err) {
+            console.log("failed to connect to node1")
+        } else {
+            console.log('Connected to node1')
+        }
+    })
+})
+node2.on('error', (err) => {
+    console.log(err)
+    node2 = mysql.createConnection(details.node2)
+    node2.connect((err) => {
+        if (err) {
+            console.log("failed to connect to node2")
+        } else {
+            console.log('Connected to node2')
+        }
+    })
+})
+node3.on('error', (err) => {
+    console.log(err)
+    node3 = mysql.createConnection(details.node3)
+    node1.connect((err) => {
+        if (err) {
+            console.log("failed to connect to node3")
+        } else {
+            console.log('Connected to node3')
+        }
+    })
+})
+
+node1.connect((err) => {
+    if (err) {
+        console.log("failed to connect to node1")
+    } else {
+        console.log('Connected to node1')
+    }
+})
+node2.connect((err) => {
+    if (err) {
+        console.log("failed to connect to node2")
+    } else {
+        console.log('Connected to node2')
+    }
+})
+node3.connect((err) => {
+    if (err) {
+        console.log("failed to connect to node3")
+    } else {
+        console.log('Connected to node3')
+    }
+})
+
+doQuery = (node, q) => {
+    return new Promise ((resolve, reject) => {
+        console.log(q)
+        node.query(q, (err, result) => {
+            if (err) {
+                resolve(false)
+            } else {
+                resolve(true)
+            }
+        })
+    })
+}
+
+doQueryArray = (node, queries) => {
+    return new Promise ((resolve, reject) => {
+        var error = false
+        queries.forEach(async (q) => {
+            if(doQuery(node, q) == false) {
+                error = true
+            }
+        })
+
+        resolve(error)
+    })
+}
+
 queries1 = []
 queries2 = []
 queries3 = []
@@ -56,4 +176,19 @@ app.get('/addToQueue', function(req, res) {
     res.send({
         success: true
     })
+})
+
+app.post('/updatedatabases', function(req, res) {
+    var error1, error2, error3
+    error1 = doQueryArray(node1, queries1).then(
+        error2 = doQueryArray(node2, queries2).then(
+            error3 = doQueryArray(node3, queries3).then(
+                res.send({
+                    error1: error1,
+                    error2: error2,
+                    error3: error3,
+                })
+            )
+        )
+    )
 })

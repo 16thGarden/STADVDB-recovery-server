@@ -1,7 +1,12 @@
-<h1>Recovery Server</h1>
-
-<h6>pending queries</h6>
-<table>
+<table width="90%" style="table-layout: fixed; margin: 5%">
+    <tr>
+        <td>
+            <h1>Recovery Server</h1>
+            <h6>pending queries</h6>
+        </td>
+    </tr>
+</table>
+<table border="1px" width="90%" style="table-layout: fixed; margin: 5%">
     <tr>
         <th>Node 1</th>
         <th>Node 2</th>
@@ -9,7 +14,7 @@
     </tr>
     <tr>
         <td>
-            <table>
+            <table border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
                 {{#each queries1}}
                 <tr>
                     <td>{{this}}</td>
@@ -18,7 +23,7 @@
             </table>
         </td>
         <td>
-            <table>
+            <table border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
                 {{#each queries2}}
                 <tr>
                     <td>{{this}}</td>
@@ -27,7 +32,7 @@
             </table>
         </td>
         <td>
-            <table>
+            <table border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
                 {{#each queries3}}
                 <tr>
                     <td>{{this}}</td>
@@ -37,3 +42,69 @@
         </td>
     </tr>
 </table>
+<table width="90%" style="table-layout: fixed; margin: 5%">
+    <tr>
+        <td>
+            <input id="updatedatabases" type="button" value="Update Databases">
+        </td>
+    </tr>
+</table>
+
+
+<table width="90%" style="table-layout: fixed; margin: 5%">
+    <tr>
+        <td>
+            <input type="button" value="update databases">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h6 id="warning1" style="color: red;">test</h6>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h6 id="warning2" style="color: red;">test2</h6>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h6 id="warning3" style="color: red;">test3</h6>
+        </td>
+    </tr>
+</table>
+
+<script>
+    $("#updatedatabases").click(function() {
+        $("#updatedatabases").val("Updating...")
+        $("#warning1").html("")
+        $("#warning2").html("")
+        $("#warning3").html("")
+
+        $.post("/updatedatabases", {}, function(data) {
+            var error1 = data.error1
+            var error2 = data.error2
+            var error3 = data.error3
+
+            if (error1) {
+                $("#warning1").html("node 1 offline")
+            } else {
+                $("#warning1").html("node 1 successful")
+            }
+
+            if (error2) {
+                $("#warning2").html("node 2 offline")
+            } else {
+                $("#warning2").html("node 2 successful")
+            }
+
+            if (error1) {
+                $("#warning3").html("node 3 offline")
+            } else {
+                $("#warning3").html("node 3 successful")
+            }
+
+            $("#updatedatabases").val("Update Databases")
+        })
+    })
+</script>
