@@ -29,6 +29,12 @@ app.listen(port, function() {
 });
 
 app.get('/', function(req, res) {
+    res.render('home.hbs', {
+        title: "home"
+    })
+})
+
+app.get('/addToQueue', function(req, res) {
     node = req.query.node
     query = req.query.query
 
