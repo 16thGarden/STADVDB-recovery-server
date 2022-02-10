@@ -28,27 +28,22 @@ app.listen(port, function() {
     console.log("App listening at port "  + port);
 });
 
-var origin = "https://stadvdb-recovery-server.herokuapp.com:" + port
-const io = require('socket.io')(3000, {
-    cors: {
-        origin: [origin]
-    }
-})
-io.on('connection', socket => {
-    console.log("client connected!")
-})
+queries = []
 
 app.get('/', function(req, res) {
     res.render('home.hbs', {
-        title: "home"
+        title: "home",
+        queries: queries
     })
 })
 
 app.get('/addToQueue', function(req, res) {
     node = req.query.node
     query = req.query.query
-
-    console.log(node + "\t" + query)
+    queries.push({
+        node: node,
+        query: query
+    })
 
     res.send({
         success: true
