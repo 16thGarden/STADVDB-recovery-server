@@ -1,8 +1,39 @@
 <h1>Recovery Server</h1>
 
 <h6>pending queries</h6>
-<div id="queries">
-    {{#each queries}}
-        {{this.node}} {{this.query}}
-    {{/each}}
-</div>
+<table>
+    <tr>
+        <th>Node 1</th>
+        <th>Node 2</th>
+        <th>Node 3</th>
+    </tr>
+    <tr>
+        <td>
+            <table>
+                {{#each queries1}}
+                <tr>
+                    <td>{{this}}</td>
+                </tr>
+                {{/each}}
+            </table>
+        </td>
+        <td>
+            <table>
+                {{#each queries2}}
+                <tr>
+                    <td>{{this}}</td>
+                </tr>
+                {{/each}}
+            </table>
+        </td>
+        <td>
+            <table>
+                {{#each queries3}}
+                <tr>
+                    <td>{{this}}</td>
+                </tr>
+                {{/each}}
+            </table>
+        </td>
+    </tr>
+</table>

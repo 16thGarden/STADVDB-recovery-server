@@ -28,22 +28,30 @@ app.listen(port, function() {
     console.log("App listening at port "  + port);
 });
 
-queries = []
+queries1 = []
+queries2 = []
+queries3 = []
 
 app.get('/', function(req, res) {
     res.render('home.hbs', {
         title: "home",
-        queries: queries
+        queries1: queries1,
+        queries2: queries2,
+        queries3: queries3,
     })
 })
 
 app.get('/addToQueue', function(req, res) {
     node = req.query.node
     query = req.query.query
-    queries.push({
-        node: node,
-        query: query
-    })
+
+    if (node == 1) {
+        queries1.push(query)
+    } else if (node == 2) {
+        queries2.push(query)
+    } else if (node == 3) {
+        queries3.push(query)
+    }
 
     res.send({
         success: true
