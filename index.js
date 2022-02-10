@@ -28,6 +28,16 @@ app.listen(port, function() {
     console.log("App listening at port "  + port);
 });
 
+var origin = "https://stadvdb-recovery-server.herokuapp.com:" + port
+const io = require('socket.io')(3000, {
+    cors: {
+        origin: [origin]
+    }
+})
+io.on('connection', socket => {
+    console.log("client connected!")
+})
+
 app.get('/', function(req, res) {
     res.render('home.hbs', {
         title: "home"
