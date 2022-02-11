@@ -155,7 +155,7 @@ doQueryArray = (node, queries) => {
     })
 }
 
-clearQueryArray((node, error) => {
+clearQueryArray = (node, error) => {
     return new Promise ((resolve, reject) => {
         if (node == 1 && !error) {
             queries1 = []
@@ -167,7 +167,7 @@ clearQueryArray((node, error) => {
 
         resolve()
     })
-})
+}
 
 queries1 = []
 queries2 = []
