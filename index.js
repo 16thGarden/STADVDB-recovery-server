@@ -90,7 +90,6 @@ function handleDisconnectNode1() {
                                                
     node1.on('error', function onError(err) {
         console.log(gettime() + 'node1 error PROTOCOL_CONNECTION_LOST');
-        showtime()
         if (err.code == 'PROTOCOL_CONNECTION_LOST') {
             handleDisconnectNode1();                         
         } else {
@@ -101,9 +100,8 @@ function handleDisconnectNode1() {
 }
 
 function handleDisconnectNode2() {
-    showtime()
-    node1 = mysql.createConnection(details.node1); 
-    node1.connect( function onConnect(err) {  
+    node2 = mysql.createConnection(details.node2); 
+    node2.connect( function onConnect(err) {  
         if (err) {                                  
             console.log(gettime() + 'error when connecting to node2, trying again in 5secs...');
             setTimeout(handleDisconnectNode2, 5000);    
@@ -112,9 +110,8 @@ function handleDisconnectNode2() {
         }                                          
     });                                            
                                                
-    node1.on('error', function onError(err) {
+    node2.on('error', function onError(err) {
         console.log(gettime() + 'node2 error PROTOCOL_CONNECTION_LOST');
-        showtime()
         if (err.code == 'PROTOCOL_CONNECTION_LOST') {
             handleDisconnectNode2();                         
         } else {
@@ -125,9 +122,8 @@ function handleDisconnectNode2() {
 }
 
 function handleDisconnectNode3() {
-    showtime()
-    node1 = mysql.createConnection(details.node1); 
-    node1.connect( function onConnect(err) {  
+    node3 = mysql.createConnection(details.node3); 
+    node3.connect( function onConnect(err) {  
         if (err) {                                  
             console.log(gettime() + 'error when connecting to node3, trying again in 5secs...');
             setTimeout(handleDisconnectNode3, 5000);    
@@ -136,9 +132,8 @@ function handleDisconnectNode3() {
         }                                          
     });                                            
                                                
-    node1.on('error', function onError(err) {
+    node3.on('error', function onError(err) {
         console.log(gettime() + 'node3 error PROTOCOL_CONNECTION_LOST');
-        showtime()
         if (err.code == 'PROTOCOL_CONNECTION_LOST') {
             handleDisconnectNode3();                         
         } else {
