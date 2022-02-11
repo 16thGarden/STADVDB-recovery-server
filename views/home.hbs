@@ -67,7 +67,8 @@
 </table>
 
 <script>
-    const socket = io('http://localhost:3000')
+    //const socket = io('http://localhost:3000')
+    const socket = io('https://stadvdb-recovery-server.herokuapp.com/')
     socket.on('connection', () => {})
     socket.on('message', (data) => {
         node = data.node
