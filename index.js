@@ -185,7 +185,7 @@ app.get('/', function(req, res) {
 io.on('connection', (socket) => {
     console.log(`user connected: ${socket.id}`)
 
-    app.get('/addToQueue', function(req, res) {
+    app.post('/addToQueue', function(req, res) {
         node = req.query.node
         query = req.query.query
     
