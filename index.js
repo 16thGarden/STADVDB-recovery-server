@@ -33,6 +33,8 @@ handlebars.registerHelper('dateFormat', require('handlebars-dateformat'));
 
 const mysql = require('mysql');
 
+hostname = 'us-cdbr-east-05.cleardb.net'
+
 details = {
     node1: {
         host: 'us-cdbr-east-05.cleardb.net',
@@ -266,4 +268,45 @@ app.get('/addToHistory', function(req, res) {
     res.send({
         success: true
     })
+})
+
+app.get('/simulate', function(req, res) {
+    status1 = details.node1.host != 'a' ? "green" : "red"
+    status2 = details.node2.host != 'a' ? "green" : "red"
+    status3 = details.node3.host != 'a' ? "green" : "red"
+    res.render('simulate', {
+        status1: status1,
+        status2: status2,
+        status3: status3,
+    })
+})
+
+app.post('/toggle', function(req, res) {
+    node = req.body.node
+
+    if (node == 1) {
+        if (details.node1.host == 'a') {
+            details.node1.host = hostname
+        } else {
+            details.node1.host = 'a'
+        }
+    } else if (node == 2) {
+        if (details.node2.host == 'a') {
+            details.node2.host = hostname
+        } else {
+            details.node2.host = 'a'
+        }
+    } else if (node == 3) {
+        if (details.node3.host == 'a') {
+            details.node3.host = hostname
+        } else {
+            details.node3.host = 'a'
+        }
+    }
+
+    res.send()
+})
+
+app.get('/getdb', function(req, res) {
+    res.send(details)
 })

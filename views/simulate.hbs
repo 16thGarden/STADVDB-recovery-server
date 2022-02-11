@@ -1,0 +1,62 @@
+<table width="90%" style="table-layout: fixed; margin: 5%">
+    <tr>
+        <td>
+            <h1>Simulate DB Failures</h1>
+            <h6>database statuses</h6>
+        </td>
+    </tr>
+</table>
+
+<table border="1px" width="90%" style="table-layout: fixed; margin: 5%">
+    <tr>
+        <th>
+            Node 1 &bull;
+            <input id="toggle1" type="button" value="Toggle Node 1">
+        </th>
+        <th>
+            Node 2 &bull;
+            <input id="toggle2" type="button" value="Toggle Node 2">
+        </th>
+        <th>
+            Node 3 &bull;
+            <input id="toggle3" type="button" value="Toggle Node 3">
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <div style="background-color: {{status1}}">
+                &nbsp;
+            </div>
+        </th>
+        <th>
+            <div style="background-color: {{status2}}">
+                &nbsp;
+            </div>
+        </th>
+        <th>
+            <div style="background-color: {{status3}}">
+                &nbsp;
+            </div>
+        </th>
+    </tr>
+</table>
+
+<script>
+    $("#toggle1").click(function() {
+        $.post('/toggle', {node: 1}, function(data) {
+            window.location.reload(false)
+        })
+    });
+
+    $("#toggle2").click(function() {
+        $.post('/toggle', {node: 2}, function(data) {
+            window.location.reload(false)
+        })
+    });
+
+    $("#toggle3").click(function() {
+        $.post('/toggle', {node: 3}, function(data) {
+            window.location.reload(false)
+        })
+    });
+</script>
