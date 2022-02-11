@@ -28,7 +28,14 @@ app.listen(port, function() {
     console.log("App listening at port "  + port);
 });
 
-const mysql = require('mysql')
+const server = require('http').createServer(app)
+const io = require('socket.io')(server, { cors: {origin: '*'}})
+server.listen(3000, () => {
+    console.log('socket server running...')
+})
+
+const mysql = require('mysql');
+const { sendStatus } = require("express/lib/response");
 details = {
     /*
     node1: {
@@ -148,6 +155,20 @@ doQueryArray = (node, queries) => {
     })
 }
 
+clearQueryArray((node, error) => {
+    return new Promise ((resolve, reject) => {
+        if (node == 1 && !error) {
+            queries1 = []
+        } else if (node == 2 && !error) {
+            queries2 = []
+        } else if (node == 3 && !error) {
+            queries3 = []
+        }
+
+        resolve()
+    })
+})
+
 queries1 = []
 queries2 = []
 queries3 = []
@@ -161,20 +182,26 @@ app.get('/', function(req, res) {
     })
 })
 
-app.get('/addToQueue', function(req, res) {
-    node = req.query.node
-    query = req.query.query
+io.on('connection', (socket) => {
+    console.log(`user connected: ${socket.id}`)
 
-    if (node == 1) {
-        queries1.push(query)
-    } else if (node == 2) {
-        queries2.push(query)
-    } else if (node == 3) {
-        queries3.push(query)
-    }
+    app.get('/addToQueue', function(req, res) {
+        node = req.query.node
+        query = req.query.query
+    
+        if (node == 1) {
+            queries1.push(query)
+        } else if (node == 2) {
+            queries2.push(query)
+        } else if (node == 3) {
+            queries3.push(query)
+        }
+    
+        io.emit('message', {node: node, query: query})
 
-    res.send({
-        success: true
+        res.send({
+            success: true
+        })
     })
 })
 
@@ -183,11 +210,17 @@ app.post('/updatedatabases', function(req, res) {
     error1 = doQueryArray(node1, queries1).then(
         error2 = doQueryArray(node2, queries2).then(
             error3 = doQueryArray(node3, queries3).then(
-                res.send({
-                    error1: error1,
-                    error2: error2,
-                    error3: error3,
-                })
+                clearQueryArray(1, error1).then(
+                    clearQueryArray(2, error2).then(
+                        clearQueryArray(3, error3).then(
+                            res.send({
+                                error1: error1,
+                                error2: error2,
+                                error3: error3,
+                            })
+                        )
+                    )
+                )
             )
         )
     )

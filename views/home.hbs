@@ -14,7 +14,7 @@
     </tr>
     <tr>
         <td>
-            <table border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
+            <table id="querysNode1" border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
                 {{#each queries1}}
                 <tr>
                     <td>{{this}}</td>
@@ -23,7 +23,7 @@
             </table>
         </td>
         <td>
-            <table border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
+            <table id="querysNode2" border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
                 {{#each queries2}}
                 <tr>
                     <td>{{this}}</td>
@@ -32,7 +32,7 @@
             </table>
         </td>
         <td>
-            <table border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
+            <table id="querysNode3" border="1px" width="98%" style="table-layout: fixed; margin: 1%;">
                 {{#each queries3}}
                 <tr>
                     <td>{{this}}</td>
@@ -67,6 +67,20 @@
 </table>
 
 <script>
+    const socket = io('http://localhost:3000')
+    socket.on('connection', () => {})
+    socket.on('message', (data) => {
+        node = data.node
+        query = data.query
+        if (node == 1) {
+            $("#querysNode1").html($("#querysNode1").html() + "<tr><td>" + query + "</td></tr>")
+        } else if (node == 2) {
+            $("#querysNode2").html($("#querysNode2").html() + "<tr><td>" + query + "</td></tr>")
+        } else if (node == 3) {
+            $("#querysNode3").html($("#querysNode3").html() + "<tr><td>" + query + "</td></tr>")
+        }
+    })
+
     $("#updatedatabases").click(function() {
         $("#updatedatabases").val("Updating...")
         $("#warning1").html("")
@@ -81,18 +95,21 @@
             if (error1) {
                 $("#warning1").html("node 1 offline")
             } else {
+                $("#querysNode1").html("")
                 $("#warning1").html("node 1 successful")
             }
 
             if (error2) {
                 $("#warning2").html("node 2 offline")
             } else {
+                $("#querysNode1").html("")
                 $("#warning2").html("node 2 successful")
             }
 
             if (error1) {
                 $("#warning3").html("node 3 offline")
             } else {
+                $("#querysNode1").html("")
                 $("#warning3").html("node 3 successful")
             }
 
