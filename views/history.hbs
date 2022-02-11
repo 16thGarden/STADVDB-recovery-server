@@ -17,10 +17,10 @@
     <tr>
         {{#each history}}
         <tr>
-            <td>{{dateFormat this.time "MMM D YYYY hh:mm:ss A"}}</td>
-            <td>{{this.node}}</td>
-            <td>{{this.query}}</td>
-            <td>{{this.type}}</td>
+            <td style="word-break:break-all;">{{dateFormat this.time "MMM D YYYY hh:mm:ss A"}}</td>
+            <td style="word-break:break-all;">{{this.node}}</td>
+            <td style="word-break:break-all;">{{this.query}}</td>
+            <td style="word-break:break-all;">{{this.type}}</td>
         </tr>
         {{/each}}
     </tr>
