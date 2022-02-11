@@ -248,21 +248,24 @@ app.post('/update', function(req, res) {
 })
 
 app.get('/history', function(req, res) {
-    history.reverse()
     res.render('history', {
         title: "history",
         history: history
     })
-    history.reverse()
+})
+
+app.post('/clearhistory', function(req, res) {
+    history = []
+    res.send()
 })
 
 app.get('/addToHistory', function(req, res) {
     node = req.query.node
     q = req.query.query
 
-    q.replaceAll("%20", " ")
-    q.replaceAll("%22", "\"")
-    q.replaceAll("%3E", ">")
+    q = q.replaceAll("%20", " ")
+    q = q.replaceAll("%22", "\"")
+    q = q.replaceAll("%3E", ">")
 
     history.push({
         time: (new Date).getTime(),

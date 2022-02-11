@@ -3,6 +3,7 @@
         <td>
             <h1>History</h1>
             <h6>query history (refresh page to update)</h6>
+            <input id="clearhistory" type="button" value="Clear history">
         </td>
     </tr>
 </table>
@@ -25,3 +26,11 @@
         {{/each}}
     </tr>
 </table>
+
+<script>
+    $("#clearhistory").click(function() {
+        $.post('/clearhistory', {}, function(data) {
+            window.location.reload(false)
+        })
+    })
+</script>
