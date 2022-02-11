@@ -32,28 +32,25 @@ app.listen(port, function() {
 handlebars.registerHelper('dateFormat', require('handlebars-dateformat'));
 
 const mysql = require('mysql');
-const { sendStatus } = require("express/lib/response");
-const { query } = require("express");
-const { send } = require("process");
 
 details = {
     node1: {
-        //host: 'us-cdbr-east-05.cleardb.net',
-        host: 'a',
+        host: 'us-cdbr-east-05.cleardb.net',
+        //host: 'a',
         user: 'b6a546b49b5f9a',
         password: '4469befb',
         database: 'heroku_4d478ba2b4e8562'
     },
     node2: {
-        //host: 'us-cdbr-east-05.cleardb.net',
-        host: 'a',
+        host: 'us-cdbr-east-05.cleardb.net',
+        //host: 'a',
         user: 'b030d6dfff505f',
         password: '6d157c81',
         database: 'heroku_2dc4422a8802044'
     },
     node3: {
-        //host: 'us-cdbr-east-05.cleardb.net',
-        host: 'a',
+        host: 'us-cdbr-east-05.cleardb.net',
+        //host: 'a',
         user: 'bec9842212802f',
         password: 'ee599e7b',
         database: 'heroku_362b679429ad586'
