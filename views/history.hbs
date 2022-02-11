@@ -1,0 +1,27 @@
+<table width="90%" style="table-layout: fixed; margin: 5%">
+    <tr>
+        <td>
+            <h1>History</h1>
+            <h6>query history (refresh page to update)</h6>
+        </td>
+    </tr>
+</table>
+
+<table border="1px" width="90%" style="table-layout: fixed; margin: 5%">
+    <tr>
+        <th>Timestamp</th>
+        <th>Node</th>
+        <th>Query</th>
+        <th>Type</th>
+    </tr>
+    <tr>
+        {{#each history}}
+        <tr>
+            <td>{{dateFormat this.time "MMM D YYYY hh:mm:ss A"}}</td>
+            <td>{{this.node}}</td>
+            <td>{{this.query}}</td>
+            <td>{{this.type}}</td>
+        </tr>
+        {{/each}}
+    </tr>
+</table>

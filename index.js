@@ -1,6 +1,7 @@
 const express = require("express")
 const path = require("path")
 const exphandle = require("express-handlebars")
+const handlebars = require("handlebars")
 const { engine } = require('express-handlebars');
 const bodyParser = require("body-parser")
 
@@ -28,14 +29,12 @@ app.listen(port, function() {
     console.log("App listening at port "  + port);
 });
 
-const server = require('http').createServer(app)
-const io = require('socket.io')(server, { cors: {origin: '*'}})
-server.listen(3000, () => {
-    console.log('socket server running...')
-})
+handlebars.registerHelper('dateFormat', require('handlebars-dateformat'));
 
 const mysql = require('mysql');
 const { sendStatus } = require("express/lib/response");
+const { query } = require("express");
+const { send } = require("process");
 details = {
     /*
     node1: {
@@ -129,49 +128,26 @@ node3.connect((err) => {
     }
 })
 
-doQuery = (node, q) => {
-    return new Promise ((resolve, reject) => {
-        console.log(q)
-        node.query(q, (err, result) => {
-            if (err) {
-                resolve(false)
-            } else {
-                resolve(true)
-            }
-        })
-    })
-}
-
-doQueryArray = (node, queries) => {
-    return new Promise ((resolve, reject) => {
-        var error = false
-        queries.forEach(async (q) => {
-            if(doQuery(node, q) == false) {
-                error = true
-            }
-        })
-
-        resolve(error)
-    })
-}
-
-clearQueryArray = (node, error) => {
-    return new Promise ((resolve, reject) => {
-        if (node == 1 && !error) {
-            queries1 = []
-        } else if (node == 2 && !error) {
-            queries2 = []
-        } else if (node == 3 && !error) {
-            queries3 = []
-        }
-
-        resolve()
-    })
-}
-
 queries1 = []
 queries2 = []
 queries3 = []
+history = []
+
+updateSingle = (node, q) => {
+    return new Promise((resolve, reject) => {
+        node.query(q, (err, result) => {
+            if (err) {
+                resolve(true)
+            }
+
+            resolve(false)
+        })
+    })
+}
+
+updateSingleAsync = async (node, q) => {
+    return await updateSingle(node, q)
+}
 
 app.get('/', function(req, res) {
     res.render('home.hbs', {
@@ -184,44 +160,94 @@ app.get('/', function(req, res) {
 
 app.get('/addToQueue', function(req, res) {
     node = req.query.node
-    query = req.query.query
+    q = req.query.query
 
     if (node == 1) {
-        queries1.push(query)
+        queries1.push(q)
     } else if (node == 2) {
-        queries2.push(query)
+        queries2.push(q)
     } else if (node == 3) {
-        queries3.push(query)
+        queries3.push(q)
     }
-
-    io.emit('message', {node: node, query: query})
 
     res.send({
         success: true
     })
 })
 
-io.on('connection', (socket) => {
-    console.log(`user connected: ${socket.id}`)
+app.post('/update', function(req, res) {
+    nodeNumber = req.body.node
+
+    if (nodeNumber == 1) {
+        updateSingleAsync(node1, queries1[0]).then(error => {
+            if (!error) {
+                history.push({
+                    time: (new Date).getTime(),
+                    node: 1,
+                    query: queries1[0],
+                    type: "recovery"
+                })
+                queries1.shift()
+            }
+
+            res.send({
+                error: error
+            })
+        })
+    } else if (nodeNumber == 2) {
+        updateSingleAsync(node2, queries2[0]).then(error => {
+            if (!error) {
+                history.push({
+                    time: (new Date).getTime(),
+                    node: 2,
+                    query: queries2[0],
+                    type: "recovery"
+                })
+                queries2.shift()
+            }
+
+            res.send({
+                error: error
+            })
+        })
+    } else if (nodeNumber == 3) {
+        updateSingleAsync(node3, queries3[0]).then(error => {
+            if (!error) {
+                history.push({
+                    time: (new Date).getTime(),
+                    node: 3,
+                    query: queries3[0],
+                    type: "recovery"
+                })
+                queries3.shift()
+            }
+
+            res.send({
+                error: error
+            })
+        })
+    }
 })
 
-app.post('/updatedatabases', function(req, res) {
-    var error1, error2, error3
-    error1 = doQueryArray(node1, queries1).then(
-        error2 = doQueryArray(node2, queries2).then(
-            error3 = doQueryArray(node3, queries3).then(
-                clearQueryArray(1, error1).then(
-                    clearQueryArray(2, error2).then(
-                        clearQueryArray(3, error3).then(
-                            res.send({
-                                error1: error1,
-                                error2: error2,
-                                error3: error3,
-                            })
-                        )
-                    )
-                )
-            )
-        )
-    )
+app.get('/history', function(req, res) {
+    res.render('history', {
+        title: "history",
+        history: history
+    })
+})
+
+app.get('/addToHistory', function(req, res) {
+    node = req.query.node
+    q = req.query.query
+
+    history.push({
+        time: (new Date).getTime(),
+        node: node,
+        query: q,
+        type: "normal"
+    })
+
+    res.send({
+        success: true
+    })
 })

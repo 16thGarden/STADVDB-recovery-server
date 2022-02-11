@@ -2,15 +2,27 @@
     <tr>
         <td>
             <h1>Recovery Server</h1>
-            <h6>pending queries</h6>
+            <h6>pending queries (refresh page to update)</h6>
         </td>
     </tr>
 </table>
 <table border="1px" width="90%" style="table-layout: fixed; margin: 5%">
     <tr>
-        <th>Node 1</th>
-        <th>Node 2</th>
-        <th>Node 3</th>
+        <th>
+            Node 1 &bull;
+            <input id="update1" type="button" value="Update Node 1 (Single Query)">
+            <h6 id="warning1" style="color: red;"></h6>
+        </th>
+        <th>
+            Node 2 &bull;
+            <input id="update2" type="button" value="Update Node 2 (Single Query)">
+            <h6 id="warning1" style="color: red;"></h6>
+        </th>
+        <th>
+            Node 3 &bull;
+            <input id="update3" type="button" value="Update Node 3 (Single Query)">
+            <h6 id="warning1" style="color: red;"></h6>
+        </th>
     </tr>
     <tr>
         <td>
@@ -43,78 +55,52 @@
     </tr>
 </table>
 
-<table width="90%" style="table-layout: fixed; margin: 5%">
-    <tr>
-        <td>
-            <input id="updatedatabases" type="button" value="Update Databases">
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h6 id="warning1" style="color: red;"></h6>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h6 id="warning2" style="color: red;"></h6>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h6 id="warning3" style="color: red;"></h6>
-        </td>
-    </tr>
-</table>
-
 <script>
-    //const socket = io('http://localhost:3000')
-    const socket = io('https://stadvdb-recovery-server.herokuapp.com/')
-    socket.on('connection', () => {})
-    socket.on('message', (data) => {
-        node = data.node
-        query = data.query
-        if (node == 1) {
-            $("#querysNode1").html($("#querysNode1").html() + "<tr><td>" + query + "</td></tr>")
-        } else if (node == 2) {
-            $("#querysNode2").html($("#querysNode2").html() + "<tr><td>" + query + "</td></tr>")
-        } else if (node == 3) {
-            $("#querysNode3").html($("#querysNode3").html() + "<tr><td>" + query + "</td></tr>")
-        }
+    $("#update1").click(function() {
+        $("#update1").val("Updating...")
+        $("#warning1").html("")
+
+        $.post('/update', {
+            node: 1
+        }, function(data) {
+            if (data.error) {
+                $("#warning1").html("Node 1 Offline")
+                $("#update1").val("Update Node 1 (Single Query)")
+            } else {
+                window.location.reload(false)
+            }
+        })
     })
 
-    $("#updatedatabases").click(function() {
-        $("#updatedatabases").val("Updating...")
-        $("#warning1").html("")
+    $("#update2").click(function() {
+        $("#update2").val("Updating...")
         $("#warning2").html("")
+        
+        $.post('/update', {
+            node: 2
+        }, function(data) {
+            if (data.error) {
+                $("#warning2").html("Node 2 Offline")
+                $("#update2").val("Update Node 2 (Single Query)")
+            } else {
+                window.location.reload(false)
+            }
+        })
+    })
+
+    $("#update3").click(function() {
+        $("#update3").val("Updating...")
         $("#warning3").html("")
-
-        $.post("/updatedatabases", {}, function(data) {
-            var error1 = data.error1
-            var error2 = data.error2
-            var error3 = data.error3
-
-            if (error1) {
-                $("#warning1").html("node 1 offline")
+        
+        $.post('/update', {
+            node: 3
+        }, function(data) {
+            if (data.error) {
+                $("#warning3").html("Node 3 Offline")
+                $("#update3").val("Update Node 3 (Single Query)")
             } else {
-                $("#querysNode1").html("")
-                $("#warning1").html("node 1 successful")
+                window.location.reload(false)
             }
-
-            if (error2) {
-                $("#warning2").html("node 2 offline")
-            } else {
-                $("#querysNode1").html("")
-                $("#warning2").html("node 2 successful")
-            }
-
-            if (error1) {
-                $("#warning3").html("node 3 offline")
-            } else {
-                $("#querysNode1").html("")
-                $("#warning3").html("node 3 successful")
-            }
-
-            $("#updatedatabases").val("Update Databases")
         })
     })
 </script>
