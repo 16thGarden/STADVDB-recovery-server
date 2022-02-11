@@ -182,27 +182,27 @@ app.get('/', function(req, res) {
     })
 })
 
+app.get('/addToQueue', function(req, res) {
+    node = req.query.node
+    query = req.query.query
+
+    if (node == 1) {
+        queries1.push(query)
+    } else if (node == 2) {
+        queries2.push(query)
+    } else if (node == 3) {
+        queries3.push(query)
+    }
+
+    io.emit('message', {node: node, query: query})
+
+    res.send({
+        success: true
+    })
+})
+
 io.on('connection', (socket) => {
     console.log(`user connected: ${socket.id}`)
-
-    app.post('/addToQueue', function(req, res) {
-        node = req.query.node
-        query = req.query.query
-    
-        if (node == 1) {
-            queries1.push(query)
-        } else if (node == 2) {
-            queries2.push(query)
-        } else if (node == 3) {
-            queries3.push(query)
-        }
-    
-        io.emit('message', {node: node, query: query})
-
-        res.send({
-            success: true
-        })
-    })
 })
 
 app.post('/updatedatabases', function(req, res) {
