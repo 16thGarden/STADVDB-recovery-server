@@ -35,8 +35,8 @@ const mysql = require('mysql');
 const { sendStatus } = require("express/lib/response");
 const { query } = require("express");
 const { send } = require("process");
+
 details = {
-    /*
     node1: {
         //host: 'us-cdbr-east-05.cleardb.net',
         host: 'a',
@@ -44,89 +44,114 @@ details = {
         password: '4469befb',
         database: 'heroku_4d478ba2b4e8562'
     },
-    */
-    node1: {
-        host: 'localhost',
-        //host: 'a',
-        user: 'root',
-        password: 'root',
-        database: 'node1'
-    },
     node2: {
-        host: 'localhost',
-        //host: 'a',
-        user: 'root',
-        password: 'root',
-        database: 'node2'
+        //host: 'us-cdbr-east-05.cleardb.net',
+        host: 'a',
+        user: 'b030d6dfff505f',
+        password: '6d157c81',
+        database: 'heroku_2dc4422a8802044'
     },
     node3: {
-        host: 'localhost',
-        //host: 'a',
-        user: 'root',
-        password: 'root',
-        database: 'node3'
-    }
+        //host: 'us-cdbr-east-05.cleardb.net',
+        host: 'a',
+        user: 'bec9842212802f',
+        password: 'ee599e7b',
+        database: 'heroku_362b679429ad586'
+    },
 }
 
-var node1 = mysql.createConnection(details.node1);
-var node2 = mysql.createConnection(details.node2);
-var node3 = mysql.createConnection(details.node3);
+showtime = () => {
+    var currentdate = new Date(); 
+    var datetime = "" + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+    console.log(datetime)
+}
 
-node1.on('error', (err) => {
-    console.log(err)
-    node1 = mysql.createConnection(details.node1)
-    node1.connect((err) => {
-        if (err) {
-            console.log("failed to connect to node1")
-        } else {
-            console.log('Connected to node1')
-        }
-    })
-})
-node2.on('error', (err) => {
-    console.log(err)
-    node2 = mysql.createConnection(details.node2)
-    node2.connect((err) => {
-        if (err) {
-            console.log("failed to connect to node2")
-        } else {
-            console.log('Connected to node2')
-        }
-    })
-})
-node3.on('error', (err) => {
-    console.log(err)
-    node3 = mysql.createConnection(details.node3)
-    node1.connect((err) => {
-        if (err) {
-            console.log("failed to connect to node3")
-        } else {
-            console.log('Connected to node3')
-        }
-    })
-})
+tablename = "movies_denormalized";
 
-node1.connect((err) => {
-    if (err) {
-        console.log("failed to connect to node1")
-    } else {
-        console.log('Connected to node1')
-    }
-})
-node2.connect((err) => {
-    if (err) {
-        console.log("failed to connect to node2")
-    } else {
-        console.log('Connected to node2')
-    }
-})
-node3.connect((err) => {
-    if (err) {
-        console.log("failed to connect to node3")
-    } else {
-        console.log('Connected to node3')
-    }
-})
+var node1
+var node2
+var node3
+
+function handleDisconnectNode1() {
+    showtime()
+    node1 = mysql.createConnection(details.node1); 
+    node1.connect( function onConnect(err) {  
+        if (err) {                                  
+            console.log('error when connecting to node1, trying again in 5secs...');
+            setTimeout(handleDisconnectNode1, 5000);    
+        } else {
+            console.log('connected to node1');
+        }                                          
+    });                                            
+                                               
+    node1.on('error', function onError(err) {
+        console.log('node1 error PROTOCOL_CONNECTION_LOST');
+        showtime()
+        if (err.code == 'PROTOCOL_CONNECTION_LOST') {
+            handleDisconnectNode1();                         
+        } else {
+            console.log('throwed err');                        
+            throw err;                                  
+        }
+    });
+}
+
+function handleDisconnectNode2() {
+    showtime()
+    node1 = mysql.createConnection(details.node1); 
+    node1.connect( function onConnect(err) {  
+        if (err) {                                  
+            console.log('error when connecting to node1, trying again in 5secs...');
+            setTimeout(handleDisconnectNode2, 5000);    
+        } else {
+            console.log('connected to node1');
+        }                                          
+    });                                            
+                                               
+    node1.on('error', function onError(err) {
+        console.log('node1 error PROTOCOL_CONNECTION_LOST');
+        showtime()
+        if (err.code == 'PROTOCOL_CONNECTION_LOST') {
+            handleDisconnectNode2();                         
+        } else {
+            console.log('throwed err');                        
+            throw err;                                  
+        }
+    });
+}
+
+function handleDisconnectNode3() {
+    showtime()
+    node1 = mysql.createConnection(details.node1); 
+    node1.connect( function onConnect(err) {  
+        if (err) {                                  
+            console.log('error when connecting to node1, trying again in 5secs...');
+            setTimeout(handleDisconnectNode3, 5000);    
+        } else {
+            console.log('connected to node1');
+        }                                          
+    });                                            
+                                               
+    node1.on('error', function onError(err) {
+        console.log('node1 error PROTOCOL_CONNECTION_LOST');
+        showtime()
+        if (err.code == 'PROTOCOL_CONNECTION_LOST') {
+            handleDisconnectNode3();                         
+        } else {
+            console.log('throwed err');                        
+            throw err;                                  
+        }
+    });
+}
+
+handleDisconnectNode1();
+handleDisconnectNode2();
+handleDisconnectNode3();
 
 queries1 = []
 queries2 = []
