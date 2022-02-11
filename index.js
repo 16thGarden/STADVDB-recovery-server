@@ -248,15 +248,21 @@ app.post('/update', function(req, res) {
 })
 
 app.get('/history', function(req, res) {
+    history.reverse()
     res.render('history', {
         title: "history",
         history: history
     })
+    history.reverse()
 })
 
 app.get('/addToHistory', function(req, res) {
     node = req.query.node
     q = req.query.query
+
+    q.replaceAll("%20", " ")
+    q.replaceAll("%22", "\"")
+    q.replaceAll("%3E", ">")
 
     history.push({
         time: (new Date).getTime(),
