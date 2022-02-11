@@ -281,6 +281,24 @@ app.get('/simulate', function(req, res) {
     })
 })
 
+const fetch = require('node-fetch')
+var destNode1 = 'https://database-node1.herokuapp.com/updateDetails'
+var destNode2 = 'https://database-node2.herokuapp.com/updateDetails'
+var destNode3 = 'https://database-node3.herokuapp.com/updateDetails'
+broadcastDetailsUpdate = () => {
+    var hostnameNode1 = details.node1.host
+    var hostnameNode2 = details.node2.host
+    var hostnameNode3 = details.node3.host
+
+    var url1 = `${destNode1}?hostname1=${hostnameNode1}&hostname2=${hostnameNode2}&hostname3=${hostnameNode3}`
+    var url2 = `${destNode2}?hostname2=${hostnameNode1}&hostname2=${hostnameNode2}&hostname3=${hostnameNode3}`
+    var url3 = `${destNode3}?hostname3=${hostnameNode1}&hostname2=${hostnameNode2}&hostname3=${hostnameNode3}`
+
+    fetch(url1)
+    fetch(url2)
+    fetch(url3)
+}
+
 app.post('/toggle', function(req, res) {
     node = req.body.node
 
@@ -303,7 +321,7 @@ app.post('/toggle', function(req, res) {
             details.node3.host = 'a'
         }
     }
-
+    broadcastDetailsUpdate()
     res.send()
 })
 

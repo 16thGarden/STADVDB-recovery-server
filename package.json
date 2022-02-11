@@ -15,7 +15,8 @@
     "express-handlebars": "^6.0.2",
     "handlebars": "^4.7.7",
     "handlebars-dateformat": "^1.1.2",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
