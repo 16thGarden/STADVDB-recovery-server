@@ -195,7 +195,7 @@ app.get('/addToQueue', function(req, res) {
 
 app.post('/update', function(req, res) {
     nodeNumber = req.body.node
-
+    foundError = true
     if (nodeNumber == 1) {
         updateSingleAsync(node1, queries1[0]).then(error => {
             if (!error) {
@@ -206,10 +206,12 @@ app.post('/update', function(req, res) {
                     type: "recovery"
                 })
                 queries1.shift()
+
+                foundError = false
             }
 
             res.send({
-                error: error
+                error: foundError
             })
         })
     } else if (nodeNumber == 2) {
@@ -222,10 +224,12 @@ app.post('/update', function(req, res) {
                     type: "recovery"
                 })
                 queries2.shift()
+
+                foundError = false
             }
 
             res.send({
-                error: error
+                error: foundError
             })
         })
     } else if (nodeNumber == 3) {
@@ -238,10 +242,12 @@ app.post('/update', function(req, res) {
                     type: "recovery"
                 })
                 queries3.shift()
+
+                foundError = false
             }
 
             res.send({
-                error: error
+                error: foundError
             })
         })
     }
@@ -284,6 +290,7 @@ app.get('/simulate', function(req, res) {
     status2 = details.node2.host != 'a' ? "green" : "red"
     status3 = details.node3.host != 'a' ? "green" : "red"
     res.render('simulate', {
+        title: "history",
         status1: status1,
         status2: status2,
         status3: status3,
